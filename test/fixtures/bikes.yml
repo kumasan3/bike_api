@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  brand_id: 
+  serial_number: MyString
+  sold_at: 2020-03-26 13:29:43
+
+two:
+  brand_id: 
+  serial_number: MyString
+  sold_at: 2020-03-26 13:29:43
