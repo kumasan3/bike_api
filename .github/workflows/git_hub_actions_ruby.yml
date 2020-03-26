@@ -24,6 +24,7 @@ jobs:
         DB_TEST_PASSWORD: db_bike_api
       with:
         ruby-version: 2.6.5
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Build and test with Rake
       run: |
         ruby -v
