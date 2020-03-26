@@ -40,7 +40,6 @@ jobs:
         bundle install --jobs 4 --retry 3
         cp config/database.yml.github-actions config/database.yml
         cat config/database.yml
-      working-directory: ./src
         bin/rails db:create
         bin/rails db:schema:load
         bin/rails db:migrate:reset RAILS_ENV=test
