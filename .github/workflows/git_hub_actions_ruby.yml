@@ -13,8 +13,8 @@ jobs:
     services:
       postgres:
         image: postgres:12
-        ports:
-          - 5432:5432
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
     - uses: actions/checkout@v2
@@ -32,6 +32,7 @@ jobs:
         DB_TEST_USERNAME: hideki
         DB_TEST_PASSWORD: db_bike_api
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        DATABASE_URL: postgresql://postgres@localhost:5432/postgres?encoding=utf8&pool=5&timeout=5000
       run: |
         ruby -v
         gem install bundler
@@ -39,6 +40,7 @@ jobs:
         bundle exec rake
         working-directory: ./src
         bin/rails db:create
-          bin/rails db:schema:load
+        in/rails db:schema:load
+        bin/rails db:migrate:reset RAILS_ENV=test
         rubocop
         bundle exec rspec
