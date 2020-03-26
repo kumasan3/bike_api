@@ -22,6 +22,7 @@ jobs:
         DB_TEST_NAME: db_test_bike_api
         DB_TEST_USERNAME: hideki
         DB_TEST_PASSWORD: db_bike_api
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       with:
         ruby-version: 2.6.5
         repo-token: ${{ secrets.GITHUB_TOKEN }}
