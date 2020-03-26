@@ -10,6 +10,11 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12
+        ports:
+          - 5432:5432
 
     steps:
     - uses: actions/checkout@v2
@@ -32,5 +37,8 @@ jobs:
         gem install bundler
         bundle install --jobs 4 --retry 3
         bundle exec rake
+        working-directory: ./src
+        bin/rails db:create
+          bin/rails db:schema:load
         rubocop
         bundle exec rspec
