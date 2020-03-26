@@ -13,7 +13,6 @@ jobs:
       postgres:
         image: postgres:12
         env:
-          DB_NAME: db_bike_api
           DB_USERNAME: hideki
           DB_PASSWORD: db_bike_api
           POSTGRES_PASSWORD: postgres
@@ -39,9 +38,10 @@ jobs:
         ruby -v
         gem install bundler
         bundle install --jobs 4 --retry 3
+        cp config/database.yml.github-actions config/database.yml
+        cat config/database.yml
         bundle exec rake
         working-directory: ./src
-        cp config/database.yml.github-actions config/database.yml
         bin/rails db:create
         bin/rails db:schema:load
         bin/rails db:migrate:reset RAILS_ENV=test
