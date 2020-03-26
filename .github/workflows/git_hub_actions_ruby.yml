@@ -36,8 +36,6 @@ jobs:
     - name: Build DB
       run: |
         ruby -v
-        gem install bundler
-        bundle install --jobs 4 --retry 3
         cp config/database.yml.github-actions config/database.yml
         cat config/database.yml
         bin/rails db:create
@@ -50,6 +48,8 @@ jobs:
         POSTGRES_PASSWORD: postgres
     - name: Run Rubocop and Rspec
       run: 
+        gem install bundler
+        bundle install --jobs 4 --retry 3
         COVERAGE=true bundle exec rspec  --require rails_helper
         rubocop
         bundle exec rspec
