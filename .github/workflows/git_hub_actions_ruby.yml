@@ -43,12 +43,14 @@ jobs:
         working-directory: ./src
         cp config/database.yml.github-actions config/database.yml
         bin/rails db:create
-        in/rails db:schema:load
+        bin/rails db:schema:load
+        bin/rails db:migrate:reset RAILS_ENV=test
       env:
         RAILS_ENV: test
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
-    - name: Run Ubocop and Rspec
-        bin/rails db:migrate:reset RAILS_ENV=test
+    - name: Run Rubocop and Rspec
+      run: 
+        COVERAGE=true bundle exec rspec  --require rails_helper
         rubocop
         bundle exec rspec
