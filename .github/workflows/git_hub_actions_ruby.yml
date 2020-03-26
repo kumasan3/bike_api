@@ -41,15 +41,17 @@ jobs:
         bin/rails db:create
         bin/rails db:schema:load
         bin/rails db:migrate:reset RAILS_ENV=test
-        bundle exec rake
       env:
         RAILS_ENV: test
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
-    - name: Run Rubocop and Rspec
-      run: 
+    - name: Run Bundle
+      run: |
         gem install bundler
         bundle install --jobs 4 --retry 3
+        bundle exec rake
+    - name: Run Rubocop and Rspec
+      run: 
         COVERAGE=true bundle exec rspec  --require rails_helper
         rubocop
         bundle exec rspec
