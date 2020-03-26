@@ -13,6 +13,15 @@ jobs:
     services:
       postgres:
         image: postgres:12
+        env:
+          DB_NAME: db_bike_api
+          DB_USERNAME: hideki
+          DB_PASSWORD: db_bike_api
+          DB_TEST_NAME: db_test_bike_api
+          DB_TEST_USERNAME: hideki
+          DB_TEST_PASSWORD: db_bike_api
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          DATABASE_URL: postgresql://postgres@localhost:5432/postgres?encoding=utf8&pool=5&timeout=5000
         ports: ["5432:5432"]
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
@@ -24,15 +33,7 @@ jobs:
         ruby-version: 2.6.5
         repo-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Build and test with Rake
-      env:
-        DB_NAME: db_bike_api
-        DB_USERNAME: hideki
-        DB_PASSWORD: db_bike_api
-        DB_TEST_NAME: db_test_bike_api
-        DB_TEST_USERNAME: hideki
-        DB_TEST_PASSWORD: db_bike_api
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        DATABASE_URL: postgresql://postgres@localhost:5432/postgres?encoding=utf8&pool=5&timeout=5000
+      
       run: |
         ruby -v
         gem install bundler
