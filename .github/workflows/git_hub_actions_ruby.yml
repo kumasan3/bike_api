@@ -17,6 +17,7 @@ jobs:
           DB_NAME: db_bike_api
           DB_USERNAME: hideki
           DB_PASSWORD: db_bike_api
+          POSTGRES_PASSWORD: postgres
           DB_TEST_NAME: db_test_bike_api
           DB_TEST_USERNAME: hideki
           DB_TEST_PASSWORD: db_bike_api
