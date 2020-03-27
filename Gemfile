@@ -36,6 +36,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'rubocop-rails', require: false
   gem 'rspec-rails', '~> 3.6'
+  gem 'spring-commands-rspec'
 end
 
 group :development do
