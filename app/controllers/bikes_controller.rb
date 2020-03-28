@@ -16,8 +16,9 @@ class BikesController < ApplicationController
   end
 
   def index
-    # bikes = Bike.where(name: params[:brand_name])
-    # render status: :created, json: { status: 201, data:[bikes] }
+    brand_id = Brand.find_by(name: params[:brand_name] )
+    bikes = Bike.where( brand_id: brand_id).pluck(:serial_number)
+    render status: :created, json: { status: 201, data:bikes }
   end
 
   private

@@ -37,8 +37,8 @@ jobs:
       run: |
         cp config/database.yml.github-actions config/database.yml
         cat config/database.yml
-        bin/rails db:create
         gem install bundler:2.0.2
+        bin/rails db:create
         bundle update --bundler
         bundle install --jobs 4 --retry 3
         bundle exec rake
