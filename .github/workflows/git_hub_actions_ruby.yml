@@ -33,8 +33,6 @@ jobs:
         RAILS_DATABASE_PASSWORD: password
     steps:
     - uses: actions/checkout@v1
-    - name: Prepare bundler
-      run: sudo apt-get install libpq-dev
     - name: Run Bundle
       run: |
         cp config/database.yml.github-actions config/database.yml
