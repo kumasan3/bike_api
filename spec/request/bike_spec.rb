@@ -89,8 +89,12 @@ RSpec.describe 'Inventory', type: :request do
         expect(response.body).to include(bike.serial_number)
       end
     end
-    it "存在しないブランド名を入力すると、エラーレスポンス返されること" do
+    it "存在しないブランド名を入力すると、エラーレスポンスが返ること" do
       get "/bikes", params: {brand_name: "OPPO"}
+        expect(response).to have_http_status(422)
+    end
+    it "ブランド名がnilだと、エラーレスポンスが返ること" do
+      get "/bikes", params: {brand_name: ""}
         expect(response).to have_http_status(422)
     end
 
