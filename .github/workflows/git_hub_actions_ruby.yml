@@ -33,14 +33,17 @@ jobs:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
     - name: install PostgreSQL client
       run: sudo apt-get install libpq-dev
+    - name: Run Bundle
+      run: |
+        gem install bundler:2.0.2
+        bundle update --bundler
+        bundle install --jobs 4 --retry 3
+        bundle exec rake
     - name: Build DB
       run: |
         ruby -v
         cp config/database.yml.github-actions config/database.yml
         cat config/database.yml
-        gem install bundler:2.0.2
-        bundle update --bundler
-        bundle install --jobs 4 --retry 3
         bin/rails db:create
         bin/rails db:schema:load
         bin/rails db:migrate:reset RAILS_ENV=test
@@ -48,11 +51,6 @@ jobs:
         RAILS_ENV: test
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
-    - name: Run Bundle
-      run: |
-        bundle update --bundler
-        bundle install --jobs 4 --retry 3
-        bundle exec rake
     - name: Run Rubocop and Rspec
       run: 
         rubocop
