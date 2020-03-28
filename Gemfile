@@ -26,18 +26,17 @@ gem 'puma', '~> 3.11'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'pg'
 
-
 # gem 'rack-cors'
 
 group :development, :test do
   gem 'bullet'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
+  gem 'factory_bot_rails'
   gem 'pry-byebug'
   gem 'pry-rails'
-  gem 'rubocop-rails', require: false
   gem 'rspec-rails', '~> 3.6'
+  gem 'rubocop-rails', require: false
   gem 'spring-commands-rspec'
-  gem 'factory_bot_rails'
 end
 
 group :development do
