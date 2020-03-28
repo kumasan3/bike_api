@@ -13,5 +13,4 @@ class BikesController < ApplicationController
     end
   end
 
-  def set_brand; end
 end
