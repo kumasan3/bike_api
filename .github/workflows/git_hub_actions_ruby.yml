@@ -36,6 +36,7 @@ jobs:
     - name: Build DB
       run: |
         ruby -v
+        gem install bundler:2.0.2
         cp config/database.yml.github-actions config/database.yml
         cat config/database.yml
         bin/rails db:create
