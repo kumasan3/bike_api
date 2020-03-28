@@ -68,4 +68,13 @@ RSpec.describe 'Inventory', type: :request do
       end
     end
   end
+
+
+  describe '自転車情報取得 API ' do
+    before do
+      @brand = FactoryBot.create(:brand, name: 'SUZUKI')
+      @bike = FactoryBot.create(:bike, brand_id: @brand.id)
+    end
+  end
+
 end
