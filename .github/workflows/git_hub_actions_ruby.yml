@@ -40,7 +40,6 @@ jobs:
         gem install bundler:2.0.2
         bundle install --jobs 4 --retry 3
         puts "gem install bundler:2.0.2終了"
-      working-directory: ./src
       env:
         RAILS_ENV: test
         POSTGRES_USER: postgres
