@@ -36,9 +36,11 @@ jobs:
     - name: Build DB
       run: |
         ruby -v
-        gem install bundler:2.0.2
         cp config/database.yml.github-actions config/database.yml
         cat config/database.yml
+        gem install bundler:2.0.2
+        bundle update --bundler
+        bundle install --jobs 4 --retry 3
         bin/rails db:create
         bin/rails db:schema:load
         bin/rails db:migrate:reset RAILS_ENV=test
@@ -48,7 +50,6 @@ jobs:
         POSTGRES_PASSWORD: postgres
     - name: Run Bundle
       run: |
-        gem install bundler:2.0.2
         bundle update --bundler
         bundle install --jobs 4 --retry 3
         bundle exec rake
