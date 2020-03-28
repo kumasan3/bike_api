@@ -24,24 +24,25 @@ jobs:
           DATABASE_URL: postgresql://postgres@localhost:5432/postgres?encoding=utf8&pool=5&timeout=5000
         ports: ["5432:5432"]
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    container:
+      image: ruby:2.6.5
+      env:
+        RAILS_ENV: test
+        RAILS_DATABASE_HOST: postgres # this is needed
+        RAILS_DATABASE_USER: pguser
+        RAILS_DATABASE_PASSWORD: password
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby 2.6.
-      uses: actions/setup-ruby@v1
-      with:
-        ruby-version: 2.6.5
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-    - name: install PostgreSQL client
+    - uses: actions/checkout@v1
+    - name: Prepare bundler
       run: sudo apt-get install libpq-dev
     - name: Run Bundle
       run: |
         cp config/database.yml.github-actions config/database.yml
         cat config/database.yml
         gem install bundler:2.0.2
-        bin/rails db:create
-        bundle update --bundler
         bundle install --jobs 4 --retry 3
-        bundle exec rake
+        puts "gem install bundler:2.0.2終了"
+      working-directory: ./src
       env:
         RAILS_ENV: test
         POSTGRES_USER: postgres
@@ -56,3 +57,4 @@ jobs:
       run: 
         rubocop
         bundle exec rspec
+        
