@@ -13,6 +13,11 @@ RSpec.describe 'Inventory', type: :request do
         expect(response).to have_http_status(201)
         expect(Bike.count).to eq(@count_before + 1)
       end
+      it 'ブランド名が brandsテーブルに登録されること' do
+        post '/bikes', params: { brand_name: 'HONDA', serial_number: '12345' }
+        brand = Brand.find_by(name: "HONDA")
+        expect(brand.nil?).to eq(false)
+      end
       it 'brand_nameが無ければ登録できないこと' do
         post '/bikes', params: { brand_name: '', serial_number: '12345' }
         expect(response).to have_http_status(422)
@@ -73,11 +78,20 @@ RSpec.describe 'Inventory', type: :request do
   describe '自転車情報取得 API ' do
     before do
       @brand = FactoryBot.create(:brand, name: 'SUZUKI')
-      @bike = FactoryBot.create(:bike, brand_id: @brand.id).(5)
+      @bike1 = FactoryBot.create(:bike, brand_id: @brand.id)
+      @bike2 = FactoryBot.create(:bike, brand_id: @brand.id)
+      @bike3 = FactoryBot.create(:bike, brand_id: @brand.id)
     end
-    it "ブランド名でGET リクエストすると、自転車一覧がレスポンスされること" do
+    it "ブランド名でGETリクエストすると、自転車一覧がレスポンスされること" do
       get "/bikes", params: {brand_name: "SUZUKI"}
-      expect(response.body).to include("jiji")
+      bikes = Bike.where(brand_id: @brand.id)
+      bikes.each do |bike|
+        expect(response.body).to include(bike.serial_number)
+      end
+    end
+    it "存在しないブランド名を入力すると、エラーレスポンス返されること" do
+      get "/bikes", params: {brand_name: "OPPO"}
+        expect(response).to have_http_status(422)
     end
 
   end
