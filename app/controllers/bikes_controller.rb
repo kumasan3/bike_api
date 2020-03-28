@@ -19,7 +19,11 @@ class BikesController < ApplicationController
     brand_id = Brand.find_by(name: params[:brand_name] )
     if brand_id
       bikes = Bike.where( brand_id: brand_id).select(:id, :serial_number, :sold_at)
-      render json: { data: bikes }
+      data = []
+      bikes.each do |bike|
+        data = data.push({id: bike.id, serial_number: bike.serial_number, sold_at: bike.datetime_to_strftime})
+      end
+      render json: { data: data }
     else
       render status: :unprocessable_entity, json: { status: 422, error: "Brand name cannot be found"}
     end
