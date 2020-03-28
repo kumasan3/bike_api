@@ -16,11 +16,12 @@ class BikesController < ApplicationController
   end
 
   def index
-    render status: :created, json: { status: 201 }
+    brand_id = Brand.find_by(name: params[:brand_name])
+    bikes = Bike.where(id: brand_id)
+    render status: :created, json: { status: 201, data:[bikes] }
   end
 
   private
-
   def set_brand
     @brand = Brand.find_by(name: params[:brand_name])
     if @brand.nil?
