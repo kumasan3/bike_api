@@ -6,7 +6,7 @@ class BikesController < ApplicationController
       bike = Bike.new(brand_id: @brand.id, serial_number: params[:serial_number])
       if bike.save
         # バイク登録成功
-        render status: :created, json: { status: 201 }
+        render status: :created, json: { status: 201, message: "succesfully registered!" }
       else
         render status: :unprocessable_entity, json: { status: 422, error: bike.errors.full_messages }
       end
@@ -21,8 +21,27 @@ class BikesController < ApplicationController
       bikes = Bike.where( brand_id: brand_id).select(:id, :serial_number, :sold_at)
       render json: { data: bikes }
     else
-      render status: :unprocessable_entity, json: { status: 422, error: "Brand name cannot be"}
+      render status: :unprocessable_entity, json: { status: 422, error: "Brand name cannot be found"}
     end
+  end
+
+  def update
+    bike = Bike.find_by(serial_number: params[:serial_number])
+    if bike && bike.sold_at == nil
+      bike.set_sold_at
+      if bike.save
+        render status: 200, json: {status: 200, message: "Congratulations! Bike is sold"}
+      else
+        # 何らかの理由でupdateできない
+        render status: 422, json: {status: 422}
+      end
+    elsif bike
+      render status: 404, json: { status: 404, message: "Bike already sold out!"}
+    else
+      render status: 404, json: { status: 404, error: "Bike does not exist"}
+    end
+    
+
   end
 
   private
