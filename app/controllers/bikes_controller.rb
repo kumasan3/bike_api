@@ -17,8 +17,12 @@ class BikesController < ApplicationController
 
   def index
     brand_id = Brand.find_by(name: params[:brand_name] )
-    bikes = Bike.where( brand_id: brand_id).pluck(:serial_number)
-    render status: :created, json: { status: 201, data:bikes }
+    if brand_id
+      bikes = Bike.where( brand_id: brand_id).select(:id, :serial_number, :sold_at)
+      render json: { data: bikes }
+    else
+      render status: :unprocessable_entity, json: { status: 422, error: "Brand name cannot be"}
+    end
   end
 
   private

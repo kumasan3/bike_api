@@ -39,7 +39,6 @@ jobs:
         cat config/database.yml
         gem install bundler:2.0.2
         bundle install --jobs 4 --retry 3
-        puts "gem install bundler:2.0.2終了"
       env:
         RAILS_ENV: test
         POSTGRES_USER: postgres
