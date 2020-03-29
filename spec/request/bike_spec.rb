@@ -97,7 +97,30 @@ RSpec.describe 'Inventory', type: :request do
       get "/bikes", params: {brand_name: ""}
         expect(response).to have_http_status(422)
     end
+  end
 
+  
+  describe '自転車売却 API ' do
+    before do
+      @brand = FactoryBot.create(:brand, name: 'SUZUKI')
+      @bike1 = FactoryBot.create(:bike, brand_id: @brand.id)
+      @bike2 = FactoryBot.create(:bike, brand_id: @brand.id)
+      @bike3 = FactoryBot.create(:bike, brand_id: @brand.id)
+    end
+    it "売却する前は、Bikeテーブルのsold_atカラムは、nilであること" do
+      expect(@bike1.sold_at).to eq(nil) # 元々、sold_atはnil
+    end
+    context "存在する自転車のserial_numberでPATCHリクエストされた場合" do
+      it "BikeテーブルのSold_atカラムにdatetime型の日付が登録されること" do
+        patch "/bikes/#{@bike1.serial_number}"
+        bike1_after = Bike.find_by(serial_number: @bike1.serial_number)
+        expect(bike1_after.sold_at.is_a?(Time)).to eq(true)
+      end
+      it "成功すると201のHTTPステータスコードが返ること" do
+        patch "/bikes/#{@bike1.serial_number}"
+        expect(response).to have_http_status(200)
+      end
+    end
   end
 
 end
