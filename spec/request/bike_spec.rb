@@ -96,9 +96,9 @@ RSpec.describe 'Inventory', type: :request do
   describe '自転車情報取得 API ' do
     before do
       brand = FactoryBot.create(:brand, name: 'SUZUKI')
-      FactoryBot.create(:bike, brand_id: brand.id)
-      FactoryBot.create(:bike, brand_id: brand.id)
-      FactoryBot.create(:bike, brand_id: brand.id)
+      5.times{
+        FactoryBot.create(:bike, brand_id: brand.id)
+      }
     end
     context "ブランド名をbrand_nameパラメータに含めGETリクエストする場合" do
     
@@ -107,7 +107,7 @@ RSpec.describe 'Inventory', type: :request do
         brand = Brand.find_by(name: "SUZUKI")
         bikes = Bike.where(brand_id: brand.id) 
         bikes.each do |bike|
-          expect(response.body).to include(bike.serial_number)
+          expect(response.body).to include(bike.serial_number) #responseに、シリアルナンバーが入っている
         end
       end
 
@@ -137,33 +137,37 @@ RSpec.describe 'Inventory', type: :request do
 
   
   describe '自転車売却 API ' do
-    before do
-      @brand = FactoryBot.create(:brand, name: 'SUZUKI')
-      @bike1 = FactoryBot.create(:bike, brand_id: @brand.id)
-      @bike2 = FactoryBot.create(:bike, brand_id: @brand.id)
-      @bike3 = FactoryBot.create(:bike, brand_id: @brand.id)
+      let(:brand){ FactoryBot.create(:brand, name: 'SUZUKI') } 
+      let(:bike1){ FactoryBot.create(:bike, brand_id: brand.id) }
+
+    context "売却前" do
+      it "Bikeテーブルのsold_atカラムは、nilであること" do
+        expect(bike1.sold_at).to eq(nil) # 元々、sold_atはnil
+      end
     end
 
-    it "売却する前は、Bikeテーブルのsold_atカラムは、nilであること" do
-      expect(@bike1.sold_at).to eq(nil) # 元々、sold_atはnil
-    end
-
-    context "存在する自転車のserial_numberでPATCHリクエストされた場合" do
+    context "売却:存在する自転車のserial_numberでPATCHリクエストされた場合" do
 
       it "Bikeテーブルのsold_atカラムにdatetime型の日付が登録されること" do
-        patch "/bikes/#{@bike1.serial_number}"
-        bike1_after = Bike.find_by(serial_number: @bike1.serial_number)
-        expect(bike1_after.sold_at.is_a?(Time)).to eq(true)
+        patch "/bikes/#{bike1.serial_number}"
+        bike1_after = Bike.find_by(serial_number: bike1.serial_number)
+        expect(bike1_after.sold_at.nil?).to eq(false) 
       end
 
-      it "成功すると201のHTTPステータスコードが返ること" do
-        patch "/bikes/#{@bike1.serial_number}"
+      it "Bikeテーブルのsold_atカラムの日付はdatetime型であること" do
+        patch "/bikes/#{bike1.serial_number}"
+        bike1_after = Bike.find_by(serial_number: bike1.serial_number)
+        expect(bike1_after.sold_at.is_a?(Time)).to eq(true) 
+      end
+
+      it "売却に成功すると201のHTTPステータスコードが返ること" do
+        patch "/bikes/#{bike1.serial_number}"
         expect(response).to have_http_status(200)
       end
 
       it "既に売却された自転車は、再売却できないこと(Bikeテーブルsold_atカラムの更新不可)" do
-        patch "/bikes/#{@bike1.serial_number}"
-        patch "/bikes/#{@bike1.serial_number}"
+        patch "/bikes/#{bike1.serial_number}"
+        patch "/bikes/#{bike1.serial_number}"
         expect(response).to have_http_status(404)
       end
     end
