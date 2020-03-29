@@ -1,28 +1,49 @@
 class BikesController < ApplicationController
   before_action :set_brand, only: :create
+
   def create
-    if @brand
-      # before_actionでブランド参照
+      # before_actionの set_brand で @brand 取得
       bike = Bike.new(brand_id: @brand.id, serial_number: params[:serial_number])
       if bike.save
-        # バイク登録成功
-        render status: :created, json: { status: 201 }
+        # 登録成功
+        response_success_created(bike)
       else
-        render status: :unprocessable_entity, json: { status: 422, error: bike.errors.full_messages }
+        #何らかの理由で保存できない場合
+        response_not_created(bike)
       end
-    else
-      render status: :unprocessable_entity, json: { status: 422, error: bike.errors.full_messages }
-    end
   end
 
   def index
-    brand_id = Brand.find_by(name: params[:brand_name] )
-    if brand_id
-      bikes = Bike.where( brand_id: brand_id).select(:id, :serial_number, :sold_at)
-      render json: { data: bikes }
-    else
-      render status: :unprocessable_entity, json: { status: 422, error: "Brand name cannot be"}
+    brand = Brand.find_by(name: params[:brand_name] )
+    if brand
+      bikes = Bike.where( brand_id: brand.id) .select(:id, :serial_number, :sold_at)
+      data = []
+      bikes.each do |bike| #datetime型を、日本語の日付に変換
+        data = data.push({id: bike.id, serial_number: bike.serial_number, sold_at: bike.datetime_to_strftime})
+      end
+      render json: { data: data }
+    else #ブランド名が見つからない場合
+      response_not_found("Brand")
     end
+  end
+
+  def update
+    bike = Bike.find_by(serial_number: params[:serial_number])
+    if bike && bike.sold_at == nil #自転車が存在し、まだ売れていないとき
+      bike.set_sold_at #sold_atにTime.nowを代入
+      if bike.save
+        response_success_update(bike)
+      else
+        # 何らかの理由でupdateできない
+        response_not_created(bike)
+      end
+    elsif bike #自転車は存在するが、すでに売れたとき
+      response_not_updated(bike)
+    else
+      response_not_found("Bike")
+    end
+    
+
   end
 
   private
@@ -35,7 +56,7 @@ class BikesController < ApplicationController
         @brand = brand
       else
         # 何らかの理由でブランドが作成できない場合
-        render status: :unprocessable_entity, json: { status: 422, error: brand.errors.full_messages }
+        response_not_created(brand)
       end
     end
   end
