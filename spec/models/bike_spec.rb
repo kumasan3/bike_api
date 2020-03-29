@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Bike, type: :model do
-  describe ' BikeテーブルのValidationテスト' do
+  describe ' Bikeモデルのテスト' do
     context 'brand_name が brands テーブルの name に存在する場合' do
 
       let(:brand) { FactoryBot.create(:brand) }
