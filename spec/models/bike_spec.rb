@@ -1,27 +1,30 @@
 require 'rails_helper'
 
 RSpec.describe Bike, type: :model do
-  describe ' Bikeモデルのテスト' do
-    context 'brand_name が brands テーブルの name に存在する場合' do
+  describe ' Bikeモデルの単体テスト' do
+    context '登録しようとした自転車のbrand_name が brands テーブルの name カラムに存在するとき' do
 
-      let(:brand) { FactoryBot.create(:brand) }
-      let(:params) {{ brand_id: brand.id, serial_number: 'A123' }}
+      before do
+        @brand = FactoryBot.create(:brand)
+      end
+
+      let(:params) {{ brand_id: @brand.id, serial_number: 'A123' }} # @brand.idは存在するブランドのid
 
       it 'ブランドIDとシリアルナンバーで自転車を登録できること #1' do 
         bike = Bike.create(params)
-        expect(bike.valid?).to eq(true)
+        expect(bike).to be_valid
       end
 
       it 'ブランドIDとシリアルナンバーで自転車を登録できること #2' do #レコードの増加確認
         expect{ Bike.create(params) }.to change{ Bike.count }.from(0).to(1)
       end
 
-      it 'シリアルナンバーがnilの場合には登録できないこと #1' do
+      it 'シリアルナンバーがnilのときには登録できないこと #1' do
         params.merge!(serial_number: nil)
         expect{ Bike.create(params) }.not_to change{ Bike.count }
       end
 
-      it 'シリアルナンバーがnilの場合には登録できないこと #2' do
+      it 'シリアルナンバーがnilのときには登録できないこと #2' do
         params.merge!(serial_number: '')
         expect{ Bike.create(params) }.not_to change{ Bike.count }
       end
@@ -36,32 +39,32 @@ RSpec.describe Bike, type: :model do
         bike1 = Bike.create(params) # rubocop:disable all
         params.merge!(serial_number: "B456")
         bike2 = Bike.create(params) # rubocop:disable all
-        expect(bike2.valid?).to eq(true)
+        expect(bike2).to be_valid
       end
     end
 
-    context 'brand_name が brands テーブルの name に存在しない場合' do
-      let(:brand) { FactoryBot.create(:brand) }
-      let(:params) {{ brand_id: brand.id, serial_number: 'A123' }}
-      # 存在しないbrand_nameで
-      it '存在しないbrand_idだと登録できないこと #1' do
+    context '登録しようとした自転車のbrand_name が brands テーブルの name カラムに存在しないとき' do
+
+      let(:params) {{ serial_number: 'A123' }} # brand_idは指定しない
+
+      it '存在しないbrand_idだと登録できないこと' do
         params.merge!(brand_id: "random")
         expect{ Bike.create(params) }.not_to change{ Bike.count }
       end
 
-      it 'ブランドIDがnilの場合には登録できないこと #1' do
+      it 'ブランドIDがnilのときには登録できないこと #1' do
         params.merge!(brand_id: nil)
         expect{ Bike.create(params) }.not_to change{ Bike.count }
       end
 
-      it 'ブランドIDがnilの場合には登録できないこと #2' do
+      it 'ブランドIDがnilのときには登録できないこと #2' do
         params.merge!(brand_id: '')
         expect{ Bike.create(params) }.not_to change{ Bike.count }
       end
     end
   end
 
-  describe ' Bikeテーブル バイク売却時の sold_at カラム更新のテスト' do
+  describe ' Bikeテーブル バイク売却時の sold_at カラム更新の単体テスト' do
     context 'Bikeテーブルのsold_atカラムが更新できること' do
       let(:brand) { FactoryBot.create(:brand) }
       let(:params) {{ brand_id: brand.id, serial_number: 'A123' }}
@@ -71,7 +74,7 @@ RSpec.describe Bike, type: :model do
         bike.sold_at = Time.now
         bike.save
         expect(bike.sold_at.nil?).to eq(false)
-        expect(bike.valid?).to eq(true)
+        expect(bike).to be_valid
       end
 
       it "sold_atカラムにdatetime型以外のデータ型は代入できないこと #1" do

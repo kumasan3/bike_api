@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe 'Inventory', type: :request do
 
-  describe '自転車登録 API ' do 
-    context 'リクエストの brand_name が brands テーブルの name カラムに存在しない場合' do
+  describe '自転車登録 API。メソッド：POST　　URL：/bikes ' do 
+    context 'リクエストの brand_name が brands テーブルの name カラムに存在しないとき' do
       let(:params) {{ brand_name: 'HONDA', serial_number: 'A12345' }}
       let!(:bike_count_before){ Bike.count } #let!で評価前に実行
 
@@ -51,7 +51,7 @@ RSpec.describe 'Inventory', type: :request do
       end
     end
 
-    context 'リクエストの brand_name(SUZUKI) が brands テーブルの name に存在する場合' do
+    context 'リクエストの brand_name(SUZUKI) が brands テーブルの name にすでに存在するとき' do
       before do
         brand = FactoryBot.create(:brand, name: 'SUZUKI') #SUZUKiブランドを最初に登録。
       end
@@ -93,14 +93,14 @@ RSpec.describe 'Inventory', type: :request do
   end
 
 
-  describe '自転車情報取得 API ' do
+  describe '自転車情報取得 API　メソッド:GET、　URL：/bikes ' do
     before do
       brand = FactoryBot.create(:brand, name: 'SUZUKI')
       5.times{
         FactoryBot.create(:bike, brand_id: brand.id)
       }
     end
-    context "ブランド名をbrand_nameパラメータに含めGETリクエストする場合" do
+    context "ブランド名をbrand_nameパラメータに含めGETリクエストするとき" do
       
       it "レスポンスの自転車一覧が5つ入っていること" do
         get "/bikes", params: {brand_name: "SUZUKI"}
@@ -124,7 +124,7 @@ RSpec.describe 'Inventory', type: :request do
       end
     end
 
-    context "brand_nameパラメータが空でGETリクエストした場合" do
+    context "brand_nameパラメータが空のとき" do
       it "ブランド名が無い場合、エラーレスポンスが返ること" do
         get "/bikes", params: {brand_name: ""}
           expect(response).to have_http_status(404)
@@ -143,17 +143,17 @@ RSpec.describe 'Inventory', type: :request do
   end
 
   
-  describe '自転車売却 API ' do
+  describe '自転車売却 API  メソッド：PATCH  URL：/bikes/[ブランド名]' do
       let(:brand){ FactoryBot.create(:brand, name: 'SUZUKI') } 
       let(:bike1){ FactoryBot.create(:bike, brand_id: brand.id) }
 
-    context "売却前" do
+    context "売却する前のとき" do
       it "Bikeテーブルのsold_atカラムは、nilであること" do
         expect(bike1.sold_at).to eq(nil) # 元々、sold_atはnil
       end
     end
 
-    context "売却:存在する自転車のserial_numberでPATCHリクエストされた場合" do
+    context "存在する自転車のserial_numberでPATCHリクエストされたとき" do
 
       it "Bikeテーブルのsold_atカラムにdatetime型の日付が登録されること" do
         patch "/bikes/#{bike1.serial_number}"
@@ -167,14 +167,14 @@ RSpec.describe 'Inventory', type: :request do
         expect(bike1_after.sold_at.is_a?(Time)).to eq(true) 
       end
 
-      it "売却に成功すると201のHTTPステータスコードが返ること" do
+      it "売却に成功すると200のHTTPステータスコードが返ること" do
         patch "/bikes/#{bike1.serial_number}"
         expect(response).to have_http_status(200)
       end
 
       it "既に売却された自転車は、再売却できないこと(Bikeテーブルsold_atカラムの更新不可)" do
         patch "/bikes/#{bike1.serial_number}"
-        patch "/bikes/#{bike1.serial_number}"
+        patch "/bikes/#{bike1.serial_number}" #2回目
         expect(response).to have_http_status(404)
       end
     end

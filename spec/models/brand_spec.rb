@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Brand, type: :model do
-  describe "Brandモデルのテスト" do
-    context "新規にブランドを登録する場合" do
+  describe "Brandモデルの単体テスト" do
+    context "新規にブランドを登録するとき" do
 
       it "新規ブランド名が登録できること" do
         brand = Brand.new(name: "HONDA")
-        expect(brand.valid?).to eq(true)
+        expect(brand).to be_valid
         expect{ brand.save }.to change{ Brand.count }.from(0).to(1)
       end
 
@@ -21,7 +21,7 @@ RSpec.describe Brand, type: :model do
       end
     end
 
-    context "登録しようとしたブランド名が既存のものと重複する場合" do
+    context "登録しようとしたブランド名が既存のものと重複するとき" do
       before do
         Brand.create(params)
       end
