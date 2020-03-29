@@ -101,8 +101,15 @@ RSpec.describe 'Inventory', type: :request do
       }
     end
     context "ブランド名をbrand_nameパラメータに含めGETリクエストする場合" do
-    
-      it "自転車一覧がレスポンスされること" do
+      
+      it "レスポンスの自転車一覧が5つ入っていること" do
+        get "/bikes", params: {brand_name: "SUZUKI"}
+        json = JSON.parse(response.body)
+        expect(json["data"].length).to eq(5)
+      end
+
+
+      it "レスポンスの自転車一覧の中にシリアルナンバーが入っていること" do
         get "/bikes", params: {brand_name: "SUZUKI"}
         brand = Brand.find_by(name: "SUZUKI")
         bikes = Bike.where(brand_id: brand.id) 
