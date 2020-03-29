@@ -1,15 +1,15 @@
 class BikesController < ApplicationController
   before_action :set_brand, only: :create
-  
+
   def create
       # before_actionの set_brand で @brand 取得
       bike = Bike.new(brand_id: @brand.id, serial_number: params[:serial_number])
       if bike.save
         # 登録成功
-        render status: :created, json: { status: 201, message: "succesfully registered!" }
+        response_success_created(bike)
       else
         #何らかの理由で保存できない場合
-        render status: :unprocessable_entity, json: { status: 422, error: bike.errors.full_messages }
+        response_not_created(bike)
       end
   end
 
@@ -23,24 +23,24 @@ class BikesController < ApplicationController
       end
       render json: { data: data }
     else #ブランド名が見つからない場合
-      render status: 404, json: { status: 404, error: "Brand name cannot be found"}
+      response_not_found("Brand")
     end
   end
 
   def update
     bike = Bike.find_by(serial_number: params[:serial_number])
-    if bike && bike.sold_at == nil
-      bike.set_sold_at
+    if bike && bike.sold_at == nil #自転車が存在し、まだ売れていないとき
+      bike.set_sold_at #sold_atにTime.nowを代入
       if bike.save
-        render status: 200, json: {status: 200, message: "Congratulations! Bike is sold"}
+        response_success_update(bike)
       else
         # 何らかの理由でupdateできない
-        render status: 422, json: {status: 422}
+        response_not_created(bike)
       end
-    elsif bike
-      render status: 404, json: { status: 404, message: "Bike already sold out!"}
+    elsif bike #自転車は存在するが、すでに売れたとき
+      response_not_updated(bike)
     else
-      render status: 404, json: { status: 404, error: "Bike does not exist"}
+      response_not_found("Bike")
     end
     
 
@@ -56,7 +56,7 @@ class BikesController < ApplicationController
         @brand = brand
       else
         # 何らかの理由でブランドが作成できない場合
-        render status: :unprocessable_entity, json: { status: 422, error: brand.errors.full_messages }
+        response_not_created(brand)
       end
     end
   end
