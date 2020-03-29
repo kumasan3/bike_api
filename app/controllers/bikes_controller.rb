@@ -25,7 +25,7 @@ class BikesController < ApplicationController
       end
       render json: { data: data }
     else
-      render status: :unprocessable_entity, json: { status: 422, error: "Brand name cannot be found"}
+      render status: 404, json: { status: 404, error: "Brand name cannot be found"}
     end
   end
 
