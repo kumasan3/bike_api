@@ -60,4 +60,9 @@ class BikesController < ApplicationController
       end
     end
   end
+
+  def bike_params
+    params.permit( :brand_name, :serial_number ) 
+  end
+
 end
