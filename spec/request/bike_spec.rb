@@ -52,9 +52,9 @@ RSpec.describe 'Inventory', type: :request do
 
     context 'リクエストの brand_name(SUZUKI) が brands テーブルの name にすでに存在するとき' do
       before do
-        brand = FactoryBot.create(:brand, name: 'SUZUKI') # SUZUKiブランドを最初に登録。
+        @brand = FactoryBot.create(:brand, name: 'SUZUKI') # SUZUKiブランドを最初に登録。
       end
-      let(:params) { { brand_name: 'SUZUKI', serial_number: 'A12345' } }
+      let(:params) { { brand_name: @brand.name, serial_number: 'A12345' } }
       let!(:bike_count_before) { Bike.count } # let!で評価前に実行
       let!(:brand_count_before) { Brand.count } # let!で評価前に実行
 

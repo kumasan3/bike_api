@@ -55,4 +55,4 @@ jobs:
         cp config/database.yml.github-actions config/database.yml
         cat config/database.yml
         rspec
-        # rubocop
+        ubocop
