@@ -2,17 +2,17 @@ name: Ruby
 
 on:
   push:
-    branches: [ master, dev ]
+    branches: [ dev ] # devブランチにプッシュされたらGit Hub Action 開始
   pull_request:
-    branches: [ master ]
+    branches: [ master ] # masterブランチにPull Request されたらGit Hub Action 開始
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # GitHubホストランナー Ubuntu 18.04
 
     services:
-      postgres:
+      postgres: #PostgreSQL ビルド
         image: postgres:12
-        ports: ["5432:5432"]
+        ports: ["5432:5432"]  # Dockerのhealth Checkコマンド。 通常起動で問題ないか確認。
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
         env:
           PGHOST: localhost
@@ -21,10 +21,10 @@ jobs:
           RAILS_ENV: test
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2 # WorkflowがレポジトリをFetchしてくれる
 
     - name: Set up Ruby 2.6
-      uses: actions/setup-ruby@v1
+      uses: actions/setup-ruby@v1 # Workflowがruby環境を整えてくれる
       with:
         ruby-version: 2.6.x
 
@@ -36,9 +36,9 @@ jobs:
       env:
         PGHOST: localhost
         POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: password
+        POSTGRES_PASSWORD: password 
         RAILS_ENV: test
-      run: |
+      run: | # database.yml.github-actionに、workflow用のDB設定を記載。環境変数(.env)をGitHubに公開しなくて済む
         cp config/database.yml.github-actions config/database.yml
         cat config/database.yml
         gem install bundler
@@ -55,4 +55,4 @@ jobs:
         cp config/database.yml.github-actions config/database.yml
         cat config/database.yml
         rspec
-        ubocop
+        rubocop
