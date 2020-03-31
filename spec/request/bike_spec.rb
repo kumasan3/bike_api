@@ -169,7 +169,7 @@ RSpec.describe 'Inventory', type: :request do
       it '既に売却された自転車は、再売却できないこと(Bikeテーブルsold_atカラムの更新不可)' do
         patch "/bikes/#{bike1.serial_number}"
         patch "/bikes/#{bike1.serial_number}" # 2回目
-        expect(response).to have_http_status(404)
+        expect(response).to have_http_status(422)
       end
     end
 
