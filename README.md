@@ -50,7 +50,7 @@ URL:    http://localhost:3000/bikes/
 }  
   
 ## 3. 自転車売却API  
-URL:    http://localhost:3000/bikes/__serial_number__  
+URL:    http://localhost:3000/bikes/ **[serial_number]**  
 メソッド：  PATCH  
 パラメータ： **URLに付加**  
 レスポンス:　  
