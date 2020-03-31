@@ -5,12 +5,11 @@
 
 URL:     http://localhost:3000/bikes/  
 メソッド:   POST  
-パラメータ： brand_name (ブランド名)  
-         serial_number (車体番号)  
+パラメータ： brand_name (ブランド名)、serial_number (車体番号)  
 レスポンス：
 成功時 ステータスコード 201 と以下を返す (自転車登録成功)  
 {  
-  "status": 201,  
+    "status": 201,  
   "message": "[brand_name] ([serial_number])  Successfully registered!!"  
 }  
   
