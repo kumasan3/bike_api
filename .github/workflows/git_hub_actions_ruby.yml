@@ -28,7 +28,8 @@ jobs:
         private-key: ${{ secrets.SSH_KEY }} 
         public-key: ${{ secrets.SSH_KEY_PUBLIC }} 
     - name: run deploy script
-      run: whoami
+      run: |
+        ssh -p $${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "sudo bash ~/deploy.sh"
 
     - name: Set up Ruby 2.6
       uses: actions/setup-ruby@v1 # Workflowがruby環境を整えてくれる
