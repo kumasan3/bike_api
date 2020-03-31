@@ -19,7 +19,8 @@ class BikesController < ApplicationController
     if brand
       bikes = Bike.where(brand_id: brand.id).select(:id, :serial_number, :sold_at)
       data = datetime_to_strftime(bikes)
-      render json: { data: data }
+      data = JSON.pretty_generate(data: data)
+      render json: data
     else # ブランド名が見つからない場合
       response_not_found('Brand')
     end
