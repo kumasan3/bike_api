@@ -1,28 +1,38 @@
 class ApplicationController < ActionController::API
   def response_success_update(bike)
-    render status: :ok, json: {
+    data = {
       status: 200, message: "Congratulations! #{bike.brand.name} is sold"
     }
+    data = JSON.pretty_generate(data)
+    render status: :ok, json: data
   end
 
   def response_success_created(bike)
-    render status: :created, json: {
+    data = {
       status: 201, message: "#{bike.brand.name} (#{bike.serial_number})  Successfully registered!!"
     }
+    data = JSON.pretty_generate(data)
+    render status: :created, json: data
   end
 
   def response_not_found(object)
-    render status: :not_found, json: { status: 404, error: "#{object} cannot be found" }
+    data = { status: 404, error: "#{object} cannot be found" }
+    data = JSON.pretty_generate(data)
+    render status: :not_found, json: data
   end
 
   def response_not_updated(bike)
-    render status: :not_found, json: {
+    data = {
       status: 404, message: "#{bike.brand.name} (#{bike.serial_number}) already sold out!"
     }
+    data = JSON.pretty_generate(data)
+    render status: :not_found, json: data
   end
 
   def response_not_created(bike)
-    render status: :unprocessable_entity, json: { status: 422, error: bike.errors.full_messages }
+    data = { status: 422, error: bike.errors.full_messages }
+    data = JSON.pretty_generate(data)
+    render status: :unprocessable_entity, json: data
   end
 
   def datetime_to_strftime(bikes)
