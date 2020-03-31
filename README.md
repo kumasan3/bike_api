@@ -50,12 +50,12 @@ URL:    http://localhost:3000/bikes/
 }  
   
 ## 3. 自転車売却API  
-URL:    http://localhost:3000/bikes/**[serial_number]**  
+URL:    http://localhost:3000/bikes/**serial_number**  
 メソッド：  PATCH  
 パラメータ： **URLに付加**  
 レスポンス:　  
 成功時　ステータスコード200と以下を返す   
-{ 
+{  
 　"status": 200,  
 　"message": "Congratulations! Hoge is sold"  
 }  
