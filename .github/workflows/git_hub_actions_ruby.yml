@@ -29,8 +29,8 @@ jobs:
         public-key: ${{ secrets.SSH_KEY_PUBLIC }} 
     - name: run deploy script
       run: |
-        puts $${{ secrets.SSH_PORT }}
-        puts ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+        echo $${{ secrets.SSH_PORT }}
+        echo ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
         ssh -p $${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "sudo bash ~/deploy.sh"
 
     - name: Set up Ruby 2.6
