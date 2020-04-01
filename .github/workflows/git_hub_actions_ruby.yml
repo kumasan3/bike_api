@@ -58,7 +58,5 @@ jobs:
     - name: run deploy script
       run: |
         echo "${{ secrets.SSH_KEY }}" > key && chmod 600 key
-        echo $${{ secrets.SSH_PORT }}
-        echo ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-        # ssh -p $${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "bash ~/deploy.sh"
         ssh -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash ~/deploy.sh'
+
