@@ -38,3 +38,5 @@ if rails_env == "production"
     threads_count =  5
     threads threads_count, threads_count
 end
+
+plugin :tmp_restart
