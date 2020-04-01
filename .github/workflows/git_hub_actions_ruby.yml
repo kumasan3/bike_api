@@ -22,14 +22,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2 # WorkflowがレポジトリをFetchしてくれる
-    - name: run deploy script
-      run: |
-        echo "${{ secrets.SSH_KEY }}" > key && chmod 600 key
-        echo $${{ secrets.SSH_PORT }}
-        echo ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-        # ssh -p $${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "bash ~/deploy.sh"
-        ssh -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash ~/deploy.sh'
-
     - name: Set up Ruby 2.6
       uses: actions/setup-ruby@v1 # Workflowがruby環境を整えてくれる
       with:
@@ -63,4 +55,20 @@ jobs:
         cat config/database.yml
         rspec
         rubocop
- 
+
+on:
+  release:
+    types:
+    - published 
+name: Deploy
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: run deploy script
+      run: |
+        echo "${{ secrets.SSH_KEY }}" > key && chmod 600 key
+        echo $${{ secrets.SSH_PORT }}
+        echo ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+        # ssh -p $${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "bash ~/deploy.sh"
+        ssh -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash ~/deploy.sh'
