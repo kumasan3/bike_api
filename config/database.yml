@@ -33,4 +33,6 @@ test:
 
 production:
   <<: *default
-  database: db/production.sqlite3
+  database: <%= ENV.fetch('PRODUCTION_DB_NAME') %>
+  username: <%= ENV.fetch('PRODUCTION_DB_USERNAME') %>
+  password: <%= ENV.fetch('PRODUCTION_DB_PASSWORD') %>

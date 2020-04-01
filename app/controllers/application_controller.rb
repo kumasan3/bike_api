@@ -23,10 +23,10 @@ class ApplicationController < ActionController::API
 
   def response_not_updated(bike)
     data = {
-      status: 404, message: "#{bike.brand.name} (#{bike.serial_number}) already sold out!"
+      status: 422, message: "#{bike.brand.name} (#{bike.serial_number}) already sold out!"
     }
     data = JSON.pretty_generate(data)
-    render status: :not_found, json: data
+    render status: :unprocessable_entity, json: data
   end
 
   def response_not_created(bike)
