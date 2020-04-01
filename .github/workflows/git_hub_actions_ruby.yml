@@ -62,4 +62,3 @@ jobs:
         echo ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
         # ssh -p $${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "bash ~/deploy.sh"
         ssh -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash ~/deploy.sh'
-
