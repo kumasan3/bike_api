@@ -3,6 +3,8 @@ name: Ruby
 on:
   push:
     branches: [ dev ] # devブランチにプッシュされたらGit Hub Action 開始
+  pull_request:
+    branches: [ master ] # masterブランチにPull Request されたらGit Hub Action 開始
 jobs:
   build:
     runs-on: ubuntu-latest # GitHubホストランナー Ubuntu 18.04
@@ -53,17 +55,10 @@ jobs:
         cat config/database.yml
         rspec
         rubocop
-
-  pull_request:
-    branches: [ master ] # masterブランチにPull Request されたらGit Hub Action 開始
-  jobs:
-    deploy:
-      runs-on: ubuntu-latest
-      steps:
-      - name: run deploy script
-        run: |
-          echo "${{ secrets.SSH_KEY }}" > key && chmod 600 key
-          echo $${{ secrets.SSH_PORT }}
-          echo ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-          # ssh -p $${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "bash ~/deploy.sh"
-          ssh -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash ~/deploy.sh'
+    - name: run deploy script
+      run: |
+        echo "${{ secrets.SSH_KEY }}" > key && chmod 600 key
+        echo $${{ secrets.SSH_PORT }}
+        echo ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+        # ssh -p $${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "bash ~/deploy.sh"
+        ssh -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash ~/deploy.sh'
