@@ -1,10 +1,9 @@
 # 自転車在庫管理API
-
+※ AWSへデプロイしていましたが、解約しました。
 
 ## 1. 自転車登録 API  
 
 URL(ローカル):     http://localhost:3000/bikes/  
-URL(AWS):        http://18.177.128.29:3000/bikes
 メソッド:   POST  
 パラメータ： brand_name (ブランド名)、serial_number (車体番号)  
 レスポンス：
@@ -26,7 +25,6 @@ URL(AWS):        http://18.177.128.29:3000/bikes
 ## 2. 自転車情報取得 API    
 
 URL(ローカル):    http://localhost:3000/bikes/  
-URL(AWS):        http://18.177.128.29:3000/bikes
 メソッド：  GET  
 パラメータ：brand_name (ブランド名)  
 レスポンス:　  
@@ -53,7 +51,6 @@ URL(AWS):        http://18.177.128.29:3000/bikes
   
 ## 3. 自転車売却API  
 URL(ローカル):    http://localhost:3000/bikes/ **[serial_number]**  
-URL(AWS):        http://18.177.128.29:3000/bikes/ **[serial_number]**  
 メソッド：  PATCH  
 パラメータ： **URLに付加**  
 レスポンス:　  
